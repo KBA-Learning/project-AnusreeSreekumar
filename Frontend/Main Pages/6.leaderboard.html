@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+    
+    <div class="min-h-screen bg-gradient-to-r from-emerald-300 via-cyan-100 to-sky-200 flex flex-col justify-center items-center p-4">
+        <!-- Page Title -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Leaderboard</h1>
+      
+        <!-- Leaderboard Table -->
+        <div class="w-full max-w-3xl bg-white rounded-lg shadow-md p-4">
+          <!-- Table Header -->
+          <div class="grid grid-cols-3 text-gray-600 font-semibold text-lg border-b border-gray-200 pb-2 mb-4">
+            <span class="text-left">Rank</span>
+            <span class="text-center">Player</span>
+            <span class="text-right">Score</span>
+          </div>
+      
+          <!-- Leaderboard Items -->
+          <div class="space-y-4">
+            <!-- Player 1 -->
+            <div class="grid grid-cols-3 items-center text-gray-800">
+              <span class="text-left text-xl font-bold">#1</span>
+              <div class="flex items-center justify-center">
+                <img src="/Images/Avatars/Girl1.png" alt="Player 1" class="w-10 h-10 rounded-full mr-2">
+                <span class="text-lg font-semibold">Player One</span>
+              </div>
+              <span class="text-right text-lg font-semibold text-blue-600">###</span>
+            </div>
+      
+            <!-- Player 2 -->
+            <div class="grid grid-cols-3 items-center text-gray-800">
+              <span class="text-left text-xl font-bold">#2</span>
+              <div class="flex items-center justify-center">
+                <img src="/Images/Avatars/Guy1.png" alt="Player 2" class="w-10 h-10 rounded-full mr-2">
+                <span class="text-lg font-semibold">Player Two</span>
+              </div>
+              <span class="text-right text-lg font-semibold text-blue-600">###</span>
+            </div>
+      
+            <!-- Player 3 -->
+            <div class="grid grid-cols-3 items-center text-gray-800">
+              <span class="text-left text-xl font-bold">#3</span>
+              <div class="flex items-center justify-center">
+                <img src="/Images/Avatars/Girl2.png" alt="Player 3" class="w-10 h-10 rounded-full mr-2">
+                <span class="text-lg font-semibold">Player Three</span>
+              </div>
+              <span class="text-right text-lg font-semibold text-blue-600">###</span>
+            </div>
+      
+            <!-- More Players... -->
+            <div class="grid grid-cols-3 items-center text-gray-800">
+              <span class="text-left text-xl font-bold">#4</span>
+              <div class="flex items-center justify-center">
+                <img src="/Images/Avatars/Guy2.png" alt="Player 4" class="w-10 h-10 rounded-full mr-2">
+                <span class="text-lg font-semibold">Player Four</span>
+              </div>
+              <span class="text-right text-lg font-semibold text-blue-600">###</span>
+            </div>
+      
+          </div>
+        </div>
+      
+        <!-- Footer or Additional Info -->
+        <!-- <div class="mt-6 text-gray-600">
+          <a href="#" class="text-blue-500 hover:underline">View Full Leaderboard</a>
+        </div> -->
+      </div>    
+      
+</body>
+</html>

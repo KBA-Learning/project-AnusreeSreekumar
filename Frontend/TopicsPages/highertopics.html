@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Higher Education Topics</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .hover-word span:hover {
+            color: rgb(255, 247, 237);
+            /* Hover color */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main container with background gradient and full-screen height -->
+    <div
+        class="bg-gradient-to-r from-emerald-300 via-cyan-100 to-sky-200 w-screen min-h-screen flex flex-col items-center py-16">
+
+        <!-- Section for the heading -->
+        <div class="bg-indigo-200 rounded-lg shadow-lg py-8 px-10 w-3/4 text-center mb-12">
+            <h3 class="text-5xl font-semibold tracking-wide text-amber-500 hover-word">
+                <span>Higher/College</span>
+                <span>Level</span>
+            </h3>
+        </div>
+
+        <!-- Grid container for the subcategory checkboxes -->
+        <div class="w-3/4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                <!-- Checkbox with label for each category -->
+                <div class="flex items-center">
+                    <input type="checkbox" class="mr-2 h-5 w-5 text-blue-600">
+                    <label class="text-lg">College-Level Math</label>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" class="mr-2 h-5 w-5 text-blue-600">
+                    <label class="text-lg">Advanced Physics</label>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" class="mr-2 h-5 w-5 text-blue-600">
+                    <label class="text-lg">Organic Chemistry</label>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" class="mr-2 h-7 w-6 text-blue-600">
+                    <label class="text-lg">Economics & Business Studies</label>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" class="mr-2 h-5 w-5 text-blue-600">
+                    <label class="text-lg">World History</label>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" class="mr-2 h-5 w-5 text-blue-600">
+                    <label class="text-lg">Political Science</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
