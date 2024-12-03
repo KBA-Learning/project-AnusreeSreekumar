@@ -1,0 +1,95 @@
+/* Animation for Gradient Background */
+@keyframes gradient-x {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .animate-gradient-x {
+    animation: gradient-x 5s ease infinite;
+  }
+  
+  /* Fade In Animation */
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 1.5s ease-in-out;
+  }
+
+  .quiz-card:hover {
+    animation: bounce 0.3s ease-out;
+  }
+  
+  @keyframes bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  /* QuizResult.css */
+.result-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 40px;
+  max-width: 500px;
+  margin: 50px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.result-container h1 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.result-container h2 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 28px;
+  color: #343a40;
+  margin-bottom: 30px;
+}
+
+.result-container a {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  color: #007bff;
+  text-decoration: none;
+  padding: 12px 25px;
+  border: 2px solid #007bff;
+  border-radius: 25px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.result-container a:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.result-container a:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 600px) {
+  .result-container {
+      padding: 20px;
+      max-width: 90%;
+  }
+  .result-container h1 {
+      font-size: 28px;
+  }
+  .result-container h2 {
+      font-size: 24px;
+  }
+  .result-container a {
+      font-size: 16px;
+      padding: 10px 20px;
+  }
+}
+
+  

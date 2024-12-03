@@ -1,0 +1,80 @@
+{
+  "difficulty": "Easy",
+  "questions": [
+    {
+      "questionText": "Which dance form is famous in Tamil Nadu?",
+      "options": ["Bharatanatyam", "Kathakali", "Odissi", "Kuchipudi"],
+      "answer": "Bharatanatyam"
+    },
+    {
+      "questionText": "Salsa is a popular dance form originating from which region?",
+      "options": ["Cuba", "India", "France", "Russia"],
+      "answer": "Cuba"
+    },
+    {
+      "questionText": "Which classical dance form is from Kerala?",
+      "options": ["Kathakali", "Manipuri", "Bharatanatyam", "Kathak"],
+      "answer": "Kathakali"
+    },
+    {
+      "questionText": "What is the traditional dance form of Japan?",
+      "options": ["Kabuki", "Ballet", "Flamenco", "Tango"],
+      "answer": "Kabuki"
+    },
+    {
+      "questionText": "Which dance form is associated with Spain?",
+      "options": ["Flamenco", "Samba", "Ballet", "Cha-cha"],
+      "answer": "Flamenco"
+    },
+    {
+      "questionText": "Ballet originated in which country?",
+      "options": ["Italy", "France", "Russia", "Germany"],
+      "answer": "Italy"
+    },
+    {
+      "questionText": "Which Indian dance form is performed with elaborate costumes and masks?",
+      "options": ["Kathakali", "Mohiniyattam", "Manipuri", "Odissi"],
+      "answer": "Kathakali"
+    },
+    {
+      "questionText": "What is the dance form popular in Punjab, India?",
+      "options": ["Bhangra", "Garba", "Dandiya", "Lavani"],
+      "answer": "Bhangra"
+    },
+    {
+      "questionText": "Which dance form uses clogs or wooden shoes?",
+      "options": ["Clogging", "Tap Dance", "Ballet", "Jazz"],
+      "answer": "Clogging"
+    },
+    {
+      "questionText": "Which classical dance form is from Andhra Pradesh?",
+      "options": ["Kuchipudi", "Kathak", "Odissi", "Manipuri"],
+      "answer": "Kuchipudi"
+    },
+    {
+      "questionText": "The Samba dance is associated with which country?",
+      "options": ["Brazil", "Argentina", "Cuba", "Mexico"],
+      "answer": "Brazil"
+    },
+    {
+      "questionText": "Which dance form involves fast footwork and is popular in Ireland?",
+      "options": ["Irish Stepdance", "Flamenco", "Samba", "Ballet"],
+      "answer": "Irish Stepdance"
+    },
+    {
+      "questionText": "What is the dance form performed during the Navratri festival in Gujarat?",
+      "options": ["Garba", "Bhangra", "Lavani", "Mohiniyattam"],
+      "answer": "Garba"
+    },
+    {
+      "questionText": "Which dance form is known as the national dance of Argentina?",
+      "options": ["Tango", "Salsa", "Rumba", "Cha-cha"],
+      "answer": "Tango"
+    },
+    {
+      "questionText": "Odissi is a classical dance form from which Indian state?",
+      "options": ["Odisha", "Tamil Nadu", "Kerala", "Andhra Pradesh"],
+      "answer": "Odisha"
+    }
+  ]
+}
