@@ -8,12 +8,12 @@ const quizSchema = new mongoose.Schema({
     },
     dbCategorySet: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     dbTitle: {
         type: String,
         required: true,
-        unique: true // Ensures the combination of dbCategoryType and dbCategorySet is unique
     },
     dbDescription: {
         type: String,

@@ -1,137 +1,77 @@
 import { Router } from "express";
-import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import mongoose from "mongoose";
-
 import { QuizCatgry } from "../Models/quizCatgry.js";
 import { QuestionSet } from "../Models/questionSet.js";
 import { authenticate } from "../Middleware/auth.js";
-import { Player } from "../Models/playerSet.js";
-import { quizEventEmitter } from "../quizEvents.js";
+
+
+// import { quizEventEmitter } from "../quizEvents.js";
 
 dotenv.config();
 const adminroute = Router();
-const SecretKey = process.env.secretKey
-
-//User schema
-const adminSchema = new mongoose.Schema({
-    dbUsername: String,
-    dbEmail: { type: String, unique: true },
-    dbPassword: String,
-    dbRole: String
-})
-
-const Admin = mongoose.model('admindetails', adminSchema)
-
-mongoose.connect('mongodb://localhost:27017/TriviaHub')
 
 adminroute.get('/', (req, res) => {
 
     res.send("Hello World")
 });
 
-//Admin Signup
-adminroute.post('/signup_admin', async (req, res) => {
-
-    try {
-
-        const data = req.body;
-        const { Username,
-            Email,
-            Password
-        } = data
-        // console.log("Req data:",data);
-
-        const Role = "Admin"
-        const newP = await bcrypt.hash(Password, 10);
-        const existingUser = await Admin.findOne({ dbEmail: Email })
-
-        if (existingUser) {
-
-            res.status(404).json({ message: "Admin exists in DB" })
-            console.log("Admin details already present");
-        }
-        else {
-
-            const newAdmin = new Admin({
-                dbUsername: Username,
-                dbEmail: Email,
-                dbPassword: newP,
-                dbRole: Role
-            })
-            await newAdmin.save();
-            res.status(200).json({ message: "Admin entry created" });
-            console.log("Admin details added to DB");
-        }
-    }
-    catch (error) {
-        console.log(error);
-    }
-
-})
-
-//Admin Login
-adminroute.post('/login_admin', async (req, res) => {
-
-    try {
-
-        const { Email, Password } = req.body
-
-        const result = await Admin.findOne({ dbEmail: Email })
-        if (result) {
-
-            const isvalid = await bcrypt.compare(Password, result.dbPassword)
-            if (isvalid) {
-                const token = jwt.sign(
-                    { username: result.dbEmail, userrole: result.dbRole },
-                    SecretKey,
-                    { expiresIn: '1h' }
-                )
-                res.cookie('AuthToken', token, {
-                    httpOnly: true
-                })
-                res.status(200).json({ message: "Success" })
-                console.log("Login successfull");
-            }
-            else {
-                res.status(404).json({ message: "Incorrect credentials" })
-                console.log("Please check your credentials");
-            }
-        }
-        else {
-            res.status(404).json({ message: "New Admin User" })
-            console.log("Please register as Admin");
-        }
-    }
-    catch (error) {
-        res.status(404).json(error)
-        console.log(error);
-    }
-})
-
 //Admin Dashboard - Add Quiz topic
-adminroute.post('/addquiztopic', authenticate, async (req, res) => {
+adminroute.post('/addcategories', authenticate, async (req, res) => {
 
-    const loginRole = req.UserRole;
+    const loginRole = req.userrole;
+    let cnt, CategorySet;
+
     try {
 
-        if (loginRole == 'Admin') {
+        if (loginRole == 'admin') {
+
             const {
                 CategoryType,
-                CategorySet,
+                Title,
                 Description,
                 numOfQuestions
-            } = req.body
-
-            const Title = CategoryType + '-' + CategorySet;
-            console.log(Title);
+            } = req.body;
 
             const existingCatgry = await QuizCatgry.findOne({ dbTitle: Title });
+            if (!existingCatgry) {
+                cnt = 1
+                CategorySet = Title + '_' + cnt;
+            }
+            else {
+
+                // Extract the numeric part after the last underscore in dbCategorySet
+                const latest = existingCatgry.dbCategorySet;
+                const cnt = parseInt(latest.split('_')[1], 10);
+                const updated_count = cnt + 1;
+                CategorySet = Title + '_' + updated_count;
+            }
 
             if (existingCatgry) {
-                res.status(404).json({ message: 'Existing Quiz category' });
-                console.log("Quiz category present");
+
+                const exstngCatgrSet = await QuizCatgry.findOne({ dbCategorySet: CategorySet })
+                if (exstngCatgrSet) {
+                    res.status(404).json({ message: 'Existing Quiz category' });
+                    console.log("Quiz category present");
+                }
+                else {
+
+                    const newQuizCatgry = new QuizCatgry({
+                        dbCategoryType: CategoryType,
+                        dbCategorySet: CategorySet,
+                        dbTitle: Title,
+                        dbDescription: Description,
+                        dbNumOfQuestions: numOfQuestions, // Store the number of questions if needed
+                        dbQuestions: [] // Set dbquestions array to null initially
+                        // createdAt will be set automatically   
+                    });
+                    const savedQuizCatgry = await newQuizCatgry.save()
+                    res.status(201).json({
+                        message: 'Quiz category added successfully!',
+                        quizCatgryId: savedQuizCatgry._id // Access the automatically generated _id
+                    });
+                    console.log('New Category Id: ', savedQuizCatgry);
+                }
+
             }
             // Create a new quiz category document
             else {
@@ -150,15 +90,7 @@ adminroute.post('/addquiztopic', authenticate, async (req, res) => {
                     message: 'Quiz category added successfully!',
                     quizCatgryId: savedQuizCatgry._id // Access the automatically generated _id
                 });
-                console.log(savedQuizCatgry);
-            }
-            const isCollectionEmpty = await QuizCatgry.countDocuments();
-            console.log("Size of QuizCatg collection", isCollectionEmpty);
-            if (isCollectionEmpty == 0) {
-                await QuizCatgry.collection.drop();
-                console.log("The QuizCatgry collection was empty and has been deleted.");
-            } else {
-                console.log("The QuizCatgry collection is not empty.");
+                console.log('New Category Id: ', savedQuizCatgry);
             }
         }
         else {
@@ -168,131 +100,156 @@ adminroute.post('/addquiztopic', authenticate, async (req, res) => {
     catch (error) {
         console.log(error);
     }
-})
+});
+
+//Retrieving categories from DB
+
+adminroute.get('/getcategories', authenticate, async (req, res) => {
+
+    const loginRole = req.userrole; // Extract role from the middleware
+    // console.log('loginrole: ',loginRole);
+
+    try {
+        if (loginRole === 'admin') {
+
+            const categories = await QuizCatgry.find({}, 'dbCategoryType dbCategorySet dbTitle dbDescription');
+
+            if (categories.length === 0) {
+                return res.status(404).json({ message: 'No categories found' });
+            }
+            else {
+                return res.status(200).json({ categories });
+            }
+
+        } else {
+            res.status(403).json({ message: 'Access denied. Admins only.' });
+        }
+    } catch (error) {
+        console.error('Error fetching quiz categories:', error);
+        res.status(500).json({ message: 'Failed to fetch quiz categories' });
+    }
+});
 
 //Add questions
 adminroute.post('/addquestionset/:categoryId', authenticate, async (req, res) => {
 
-    const loginRole = req.UserRole;
+    const loginRole = req.userrole;
     try {
 
-        if (loginRole == 'Admin') {
+        // if (loginRole == 'admin') {
 
-            const { categoryId } = req.params;
-            console.log(categoryId);
+        const { categoryId } = req.params;
+        console.log(categoryId);
 
-            const { category, questions } = req.body; // Destructure the input fields from the request body
+        const { category, difficulty, questions } = req.body; // Destructure the input fields from the request body
 
-            const existingCatgry = await QuizCatgry.findById(categoryId);
-            // console.log(existingCatgry);
-            const existingQuestion = await QuestionSet.findOne({ dbquizId: categoryId });
-            // console.log(existingQuestion);
+        const existingCatgry = await QuizCatgry.findById(categoryId);
+        console.log(existingCatgry);
+        const catgryName = existingCatgry.dbTitle;
+        const existingQuestion = await QuestionSet.findOne({ dbquizId: categoryId });
 
-
-            if (!existingCatgry) {
-                return res.status(404).json({ message: 'Quiz category not found' });
-            }
-            else {
-                if (existingQuestion) {
-                    res.status(404).json({ message: 'Duplicate Question set' });
-                    console.log("Question set available");
-                }
-                else {
-                    // Create a new question set document
-                    const newQuestionSet = new QuestionSet({ //QuestionSet
-                        dbquizId: categoryId,
-                        dbcategory: category,
-                        dbquestions: questions
-                        // createdAt will be set automatically
-                    });
-                    // Save the new question set to the database
-                    const savedQuestionSet = await newQuestionSet.save();
-                    existingCatgry.dbQuestions.push(savedQuestionSet._id);
-                    await existingCatgry.save();
-                    res.status(201).json({
-                        message: 'Question set added successfully!',
-                        questionSetId: savedQuestionSet._id // Return the ID of the created question set
-                    });
-                }
-            }
-            const isCollectionEmpty = await QuestionSet.countDocuments();
-            console.log("Size of QuizSet collection", isCollectionEmpty);
-            if (isCollectionEmpty == 0) {
-                await QuestionSet.collection.drop();
-                console.log("The QuizSet collection was empty and has been deleted.");
-            } else {
-                console.log("The QuizSet collection is not empty.");
-            }
+        if (!existingCatgry) {
+            return res.status(404).json({ message: 'Quiz category not found' });
         }
         else {
-            console.log("Admin access only");
+            if (existingQuestion) {
+                res.status(404).json({ message: 'Duplicate Question set' });
+                console.log("Question set available");
+            }
+            else {
+                // Create a new question set document
+                const newQuestionSet = new QuestionSet({ //QuestionSet
+                    dbquizId: categoryId,
+                    dbcategory: catgryName,
+                    dbquestions: questions,
+                    dbdifficulty: difficulty
+                    // createdAt will be set automatically
+                });
+                // Save the new question set to the database
+                const savedQuestionSet = await newQuestionSet.save();
+                existingCatgry.dbQuestions.push(savedQuestionSet._id);
+                await existingCatgry.save();
+                res.status(201).json({
+                    message: 'Question set added successfully!',
+                    questionSetId: savedQuestionSet._id // Return the ID of the created question set
+                });
+            }
         }
+        // }
+        // else {
+        //     console.log("Admin access only");
+        // }
     }
     catch (error) {
         console.log(error);
     }
 })
 
-//Score Updation
-
-quizEventEmitter.on('quizCompleted', async (data, callback) => {
-
-    console.log("Event received in admin:", data);
-    const { playerId, categoryId, score } = data;
-
-    console.log(`Updating score for Player ID: ${playerId} in Category ID: ${categoryId} with Score: ${score}`);
+adminroute.get('/displayquizset', authenticate, async (req, res) => {
 
     try {
 
-        const player = await Player.findOne({ dbUsername: playerId });
-        console.log("Player", player);
+        const quizSet = await QuestionSet.find({}, 'dbquizId dbcategory dbdifficulty');
+        const results = [];
+        // console.log('Set is: ',quizSet);
+        for (const cat of quizSet) {
 
-        if (!player) {
-            console.log('Player not found');
-        }
-        else {
+            const quizCount = await QuizCatgry.findOne({ dbTitle: cat.dbcategory }, 'dbNumOfQuestions')
 
-            player.dbQuizHistory.push({
-                categoryId: categoryId,
-                score: score,
-                date: new Date()
-            });
-            player.dbScores.push({
-                quizId: categoryId,
-                score: score,
-                date: new Date()
-            });
-            player.dbTotalScore = (player.dbTotalScore || 0) + score;
-            await player.save();
-            console.log('Player score and history updated successfully in admin route!');
-            callback(null, 'Admin update successful');
+            results.push({
+                quizId: cat.dbquizId,
+                category: cat.dbcategory,
+                difficulty: cat.dbdifficulty,
+                questionCount: quizCount ? quizCount.dbNumOfQuestions : 0,
+            })
         }
+        res.status(200).json(results)
     }
     catch (error) {
-        console.error('Error updating player data in admin:', error);
-        callback(error);
+        console.log('Error fetching quiz categories:', error);
+        res.status(500).json({ message: 'Failed to fetch quiz set' });
+    }
+})
+
+adminroute.get('/displayquizset/:Id', authenticate, async (req, res) => {
+
+    try {
+
+        const quizId = req.params.Id;
+        console.log('Id in req: ', quizId);
+
+        const existingquizSet = await QuestionSet.findOne({ dbquizId: quizId }, 'dbquestions')
+        console.log('Existing QuizSet: ', existingquizSet);
+
+        if (existingquizSet) {
+
+            return res.status(200).json({ existingquizSet })
+        }
+        else {
+            return res.status(404).json({ message: 'No QuizSet found' })
+        }
+    } catch (error) {
+        console.log('Error occured while fetching Quiz Set');
     }
 })
 
 //Delete QuestionSet
-adminroute.delete('/deleteQuestionset/:ObjectId', authenticate, async (req, res) => {
+adminroute.delete('/deleteQuestionset/:Id', authenticate, async (req, res) => {
 
-    const loginRole = req.UserRole;
+    const loginRole = req.userrole;
     try {
-        if (loginRole == 'Admin') {
-            const { ObjectId } = req.params;
-            console.log("DB Objid: ", ObjectId);
+        if (loginRole == 'admin') {
+            const quizId = req.params.Id;
+            console.log("DB id: ", quizId);
 
-            const existingQuestion = await QuestionSet.findOne({ _id: ObjectId })
-            console.log("Existing Questions:",existingQuestion);
-            // console.log(existingQuestion.dbquizId);
-            const existingCatgry = await QuizCatgry.findOne({_id:existingQuestion.dbquizId})
-            // console.log("Existing QuizCatg:",existingCatgry);
-            console.log("Question exist:",existingCatgry.dbQuestions[0]);
-            
+            const existingQuestion = await QuestionSet.findOne({ dbquizId: quizId })
+            console.log("Existing Questions:", existingQuestion);
+            const existingCatgry = await QuizCatgry.findOne({ _id: existingQuestion.dbquizId })
+            console.log("Question exist:", existingCatgry.dbQuestions[0]);
+
             if (existingQuestion) {
 
-                await QuestionSet.deleteOne({ _id: ObjectId })
+                await QuestionSet.deleteOne({ dbquizId: quizId })
                 res.status(200).json({ message: "Questions Deleted" });
                 console.log("Questions Deleted");
                 // await QuizCatgry.findByIdAndDelete(existingCatgry.dbQuestions[0]);

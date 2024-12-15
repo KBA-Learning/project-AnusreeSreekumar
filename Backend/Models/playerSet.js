@@ -10,9 +10,9 @@ const playerSchema = new mongoose.Schema({
         score: { type: Number, required: true },
         date: { type: Date, default: Date.now }
     }],
-    dbQuizHistory: [{
-        categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'QuizCategory' },
-        score: Number,
+    dbHistory: [{ // New field to store historical quiz data
+        quizId: { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' },
+        score: { type: Number, required: true },
         date: { type: Date, default: Date.now }
     }],
     dbTotalScore: { type: Number, default: 0 }, //
